@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD?err}
+      MYSQL_DATABASE: ${DB_DATABASE?err}
+      MYSQL_USER: ${DB_USERNAME?err}
+      MYSQL_PASSWORD: ${DB_PASSWORD?err}
+    healthcheck:
+      test: '/usr/bin/mysql --user=${DB_USERNAME?err} --password=${DB_PASSWORD?err} --execute "SHOW DATABASES;"'
+      start_period: ${HEALTHCHECK_START_PERIOD?err}
+      interval: ${HEALTHCHECK_INTERVAL?err}
+      timeout: ${HEALTHCHECK_TIMEOUT?err}
+      retries: ${HEALTHCHECK_RETRIES?err}
+    ports:
+      - 3306:3306
+    volumes:
+      - database_data:/var/lib/mysql
+      - ./bootstrap/mariadb:/docker-entrypoint-initdb.d
+
+  pma:
+    container_name: pma
+    image: phpmyadmin/phpmyadmin
+    environment:
+      MYSQL_USERNAME: ${DB_USERNAME?err}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD?err}
+      MAX_UPLOAD: "512M"
+    depends_on:
+      - mariadb
+    links:
+      - mariadb:db
+    ports:
+      - 8001:80
+
+volumes:
+  database_data:

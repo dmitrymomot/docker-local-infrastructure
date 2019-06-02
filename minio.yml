@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  minio:
+    container_name: minio
+    image: minio/minio
+    entrypoint: sh
+    command: -c 'mkdir -p /data/${AWS_BUCKET} && /usr/bin/minio server /data'
+    environment:
+      MINIO_ACCESS_KEY: ${AWS_KEY}
+      MINIO_SECRET_KEY: ${AWS_SECRET}
+    ports:
+      - 9000:9000
+    volumes:
+      - minio_data:/data
+
+volumes:
+  minio_data:

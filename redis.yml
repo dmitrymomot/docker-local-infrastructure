@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  redis:
+    container_name: redis
+    image: redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: ${HEALTHCHECK_START_PERIOD?err}
+      interval: ${HEALTHCHECK_INTERVAL?err}
+      timeout: ${HEALTHCHECK_TIMEOUT?err}
+      retries: ${HEALTHCHECK_RETRIES?err}
+
+volumes:
+  redis_data:

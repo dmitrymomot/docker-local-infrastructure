@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  mongodb:
+    container_name: mongo
+    image: mongo
+    environment:
+      STORAGE_ENGINE: wiredTiger
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME?err}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD?err}
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      start_period: ${HEALTHCHECK_START_PERIOD?err}
+      interval: ${HEALTHCHECK_INTERVAL?err}
+      timeout: ${HEALTHCHECK_TIMEOUT?err}
+      retries: ${HEALTHCHECK_RETRIES?err}
+
+volumes:
+  mongodb_data:
