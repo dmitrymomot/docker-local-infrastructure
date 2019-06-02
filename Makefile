@@ -9,7 +9,7 @@ up: ## Run service. Usage: make up [service]. Available services: mariadb, redis
 down: ## Down the service. Usage: make down [service]. Available services: mariadb, redis, mongo, minio, mailcatcher
 	@docker-compose -f $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS)).yml down -v --rmi=local
 
-logs: ## Show logs
+logs: ## Show logs. Usage: make logs [service]. Available services: mariadb, redis, mongo, minio, mailcatcher
 	@docker-compose -f $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS)).yml logs
 
 %:
